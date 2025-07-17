@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import 'pixi-spine';
 import { Reel } from './Reel';
-import { sound } from '../utils/sound';
+import * as sound from '../utils/sound';
 import { AssetLoader } from '../utils/AssetLoader';
 import {Spine} from "pixi-spine";
 
@@ -120,14 +120,34 @@ export class SlotMachine {
 
     private checkWin(): void {
         // Simple win check - just for demonstration
-        const randomWin = Math.random() < 0.3; // 30% chance of winning
+        const randomWin = Math.random() < 0.3; // 30% chances of winning
 
         if (randomWin) {
             sound.play('win');
             console.log('Winner!');
 
-            if (this.winAnimation) {
-                // TODO: Play the win animation found in "big-boom-h" spine
+            
+            const spineData = AssetLoader.getSpine('big-boom-h'); 
+
+            if (spineData) {
+                const spine = new Spine(spineData);
+
+                // Set position
+                spine.x = (REEL_HEIGHT * REEL_COUNT + REEL_SPACING * (REEL_COUNT - 1)) / 2;
+                spine.y = (SYMBOL_SIZE * SYMBOLS_PER_REEL) / 2;
+
+                
+                spine.state.setAnimation(0, 'boom', false);
+
+                
+                this.container.addChild(spine);
+
+                
+                spine.state.addListener({
+                    complete: () => {
+                        this.container.removeChild(spine);
+                    }
+                });
             }
         }
     }
