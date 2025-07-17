@@ -32,8 +32,9 @@ coverage/
 # TypeScript
 *.tsbuildinfo
 
-# Compiled JS
-
+# Ignore all JS and JS map files in src
+src/**/*.js
+src/**/*.js.map
 
 # Test output
 junit.xml
